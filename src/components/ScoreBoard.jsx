@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import classes from './ScoreBoard.module.css'
+// import classes from './ScoreBoard.module.css'
 
 const ScoreBoard = (props) => {
     return (
