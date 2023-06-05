@@ -6,14 +6,16 @@ import hunters from './data/hunters'
 import ScoreBoard from './components/ScoreBoard'
 import GameOver from './components/GameOver'
 import RoundResult from './components/RoundResult'
+import GameMenu from './components/GameMenu'
 
 function App() {
   const [modalMessage, setModalMessage] = useState('')
+  const [numberOfQuestions, setNumberOfQuestions] = useState(6)
+  const [beginGame, setBeginGame] = useState(false)
   const [gameOver, setGameOver] = useState(false)
   const [score, setScore] = useState(0)
   const [usedHunters, setUsedHunters] = useState([])
   const [questionNumber, setQuestionNumber] = useState(1)
-
 
 
   const selectionOfHunters = () => {
@@ -47,32 +49,33 @@ function App() {
     }, "1000")
   }
 
-  const handleClick = (e) => {
+  const handleAnswerClick = (e) => {
     e.preventDefault()
     const answerId = e.target.id
-    
     if (answerId === currentHunterList.selectedHunter.id) {
-      console.log('you won')
-      handleModal('you won')
+      handleModal('You Are Correct')
       setScore((prev) => prev + 1)
     } else {
-      handleModal('you suck')
-      console.log('not correct answer')
+      handleModal('You Suck Balls')
     }
-    if (questionNumber > 5) { // MODIFY THIS ONCE I HAVE MORE COMPLETE DATA !!!
+    if (questionNumber > numberOfQuestions) {
       setGameOver(true)
+      // setCurrentHunterList(selectionOfHunters)
+
     } else {
       setQuestionNumber((prev) => prev + 1)
-      setCurrentHunterList(selectionOfHunters)
+      // setCurrentHunterList(selectionOfHunters)
     }
+    setCurrentHunterList(selectionOfHunters)
   }
 
   return (
     <>
       <div className="mother">
-        {!gameOver && <ScoreBoard score={score} />}
-        {!gameOver && <QuizCard data={currentHunterList} onClick={handleClick} questionNumber={questionNumber} />}
-        {gameOver && <GameOver score={score} />}
+        {!beginGame && <GameMenu setQuestionNumber={setQuestionNumber} setBeginGame={setBeginGame} setNumberOfQuestions={setNumberOfQuestions} setGameOver={setGameOver} setScore={setScore} setUsedHunters={setUsedHunters} />}
+        {!gameOver && beginGame ? <ScoreBoard score={score} /> : ''}
+        {!gameOver && beginGame ? <QuizCard data={currentHunterList} onClick={handleAnswerClick} questionNumber={questionNumber} /> : ''}
+        {gameOver && beginGame ? <GameOver score={score} setBeginGame={setBeginGame} /> : ''}
         <RoundResult message={modalMessage} />
       </div>
     </>

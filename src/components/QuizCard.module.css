@@ -34,3 +34,6 @@
   background-color: #5A5A5A;
 }
 
+.option:focus {
+  outline: none;
+}
