@@ -3,17 +3,17 @@ import './App.css'
 import QuizCard from './components/QuizCard'
 import shuffleArray from './components/shuffleArray'
 import hunters from './data/hunters'
+import ScoreBoard from './components/ScoreBoard'
+import GameOver from './components/GameOver'
 
 function App() {
-  const [usedHunters, setUsedHunter] = useState([])
-  // const [currentHunterList, setCurrentHunterList] = useState({})
+  const [gameOver, setGameOver] = useState(false)
+  const [score, setScore] = useState(0)
+  const [usedHunters, setUsedHunters] = useState([])
   const [questionNumber, setQuestionNumber] = useState(1)
-  const totoShuffledArray = shuffleArray(hunters)
-
 
   const selectionOfHunters = () => {
-    const shuffledArray = structuredClone(totoShuffledArray)
-    console.log('initial array',shuffledArray)
+    const shuffledArray = structuredClone(shuffleArray(hunters))
     let selectedHunter
     let found = ""
     const otherChoicesArray = []
@@ -28,6 +28,7 @@ function App() {
         let tempHunter = shuffledArray.shift()
         otherChoicesArray.push(tempHunter)
     }
+    setUsedHunters([...usedHunters, selectedHunter])
     let hunterChoicesArray = shuffleArray([selectedHunter, ...otherChoicesArray])
     return ({selectedHunter, hunterChoicesArray})
   }
@@ -38,19 +39,23 @@ function App() {
     const answerId = e.target.id
     if (answerId === currentHunterList.selectedHunter.id) {
       console.log('you won')
-      setUsedHunter([...usedHunters, currentHunterList.selectedHunter])
+      setScore((prev) => prev + 1)
+      if (questionNumber > 5) {
+        setGameOver(true)
+      }
       setQuestionNumber((prev) => prev + 1)
-      console.log(usedHunters)
       setCurrentHunterList(selectionOfHunters)
+      console.log('usedHunters', usedHunters)
     } else {
-      console.log('you lose')
+      console.log('not correct answer')
     }
   }
-  console.log(currentHunterList)
   return (
     <>
       <div className="mother">
-        <QuizCard data={currentHunterList} onClick={handleClick} questionNumber={questionNumber} />
+        {!gameOver && <ScoreBoard score={score} />}
+        {!gameOver && <QuizCard data={currentHunterList} onClick={handleClick} questionNumber={questionNumber} />}
+        {gameOver && <GameOver score={score} />}
       </div>
     </>
   )
