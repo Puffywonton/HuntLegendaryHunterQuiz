@@ -1,3 +1,5 @@
+import Button from "./Button"
+
 /* eslint-disable react/prop-types */
 const GameMenu = (props) => {
     //need to add number of questions
@@ -13,8 +15,8 @@ const GameMenu = (props) => {
 
     return (
         <>
-            <div>GAME MENU</div>    
-            <button onClick={handleStart}>Begin Game</button>
+            <div>GAME MENU</div>   
+            <Button onClick={handleStart} name="Begin Game" />
         </>
         
     )

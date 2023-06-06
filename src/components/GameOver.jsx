@@ -1,3 +1,5 @@
+import Button from "./Button"
+
 /* eslint-disable react/prop-types */
 const GameOver = (props) => {
     const handleButton = (e) => {
@@ -9,7 +11,7 @@ const GameOver = (props) => {
         <>
             <div>GAME OVER</div>    
             <div>your final score is {props.score}</div>
-            <button onClick={handleButton}>Back To Start</button>
+            <Button onClick={handleButton} name="Back To Start" />
         </>
     )
 }

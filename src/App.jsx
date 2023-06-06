@@ -9,7 +9,7 @@ import RoundResult from './components/RoundResult'
 import GameMenu from './components/GameMenu'
 
 function App() {
-  const [modalMessage, setModalMessage] = useState('')
+  const [modalMessage, setModalMessage] = useState({})
   const [numberOfQuestions, setNumberOfQuestions] = useState(6)
   const [beginGame, setBeginGame] = useState(false)
   const [gameOver, setGameOver] = useState(false)
@@ -41,8 +41,8 @@ function App() {
   const [currentHunterList, setCurrentHunterList] = useState(selectionOfHunters)
 
 
-  const handleModal = (message) => {
-    setModalMessage(message)
+  const handleModal = (message, color) => {
+    setModalMessage({ message: message, color: color })
     document.getElementById('toto').showModal()
     setTimeout(() => {
       document.getElementById('toto').close()
@@ -53,10 +53,10 @@ function App() {
     e.preventDefault()
     const answerId = e.target.id
     if (answerId === currentHunterList.selectedHunter.id) {
-      handleModal('You Are Correct')
+      handleModal('You Are Correct', 'white')
       setScore((prev) => prev + 1)
     } else {
-      handleModal('You Suck Balls')
+      handleModal('You Are Dead Wrong', 'red')
     }
     if (questionNumber > numberOfQuestions) {
       setGameOver(true)
@@ -76,7 +76,7 @@ function App() {
         {!gameOver && beginGame ? <ScoreBoard score={score} /> : ''}
         {!gameOver && beginGame ? <QuizCard data={currentHunterList} onClick={handleAnswerClick} questionNumber={questionNumber} /> : ''}
         {gameOver && beginGame ? <GameOver score={score} setBeginGame={setBeginGame} /> : ''}
-        <RoundResult message={modalMessage} />
+        <RoundResult data={modalMessage} />
       </div>
     </>
   )
