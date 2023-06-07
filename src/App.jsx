@@ -40,13 +40,22 @@ function App() {
   }
   const [currentHunterList, setCurrentHunterList] = useState(selectionOfHunters)
 
+  const loadNextQuestion = () => {
+    if (questionNumber > numberOfQuestions) {
+      setGameOver(true)
+    } else {
+      setQuestionNumber((prev) => prev + 1)
+    }
+    setCurrentHunterList(selectionOfHunters)    
+  }
 
   const handleModal = (message, color) => {
     setModalMessage({ message: message, color: color })
     document.getElementById('toto').showModal()
     setTimeout(() => {
       document.getElementById('toto').close()
-    }, "1000")
+      loadNextQuestion()
+    }, "1250")
   }
 
   const handleAnswerClick = (e) => {
@@ -56,17 +65,8 @@ function App() {
       handleModal('You Are Correct', 'white')
       setScore((prev) => prev + 1)
     } else {
-      handleModal('You Are Dead Wrong', 'red')
+      handleModal('You Are Wrong', 'red')
     }
-    if (questionNumber > numberOfQuestions) {
-      setGameOver(true)
-      // setCurrentHunterList(selectionOfHunters)
-
-    } else {
-      setQuestionNumber((prev) => prev + 1)
-      // setCurrentHunterList(selectionOfHunters)
-    }
-    setCurrentHunterList(selectionOfHunters)
   }
 
   return (
@@ -74,7 +74,7 @@ function App() {
       <div className="mother">
         {!beginGame && <GameMenu setQuestionNumber={setQuestionNumber} setBeginGame={setBeginGame} setNumberOfQuestions={setNumberOfQuestions} setGameOver={setGameOver} setScore={setScore} setUsedHunters={setUsedHunters} />}
         {!gameOver && beginGame ? <ScoreBoard score={score} /> : ''}
-        {!gameOver && beginGame ? <QuizCard data={currentHunterList} onClick={handleAnswerClick} questionNumber={questionNumber} /> : ''}
+        {!gameOver && beginGame ? <QuizCard key={questionNumber} data={currentHunterList} onClick={handleAnswerClick} questionNumber={questionNumber} /> : ''}
         {gameOver && beginGame ? <GameOver score={score} setBeginGame={setBeginGame} /> : ''}
         <RoundResult data={modalMessage} />
       </div>

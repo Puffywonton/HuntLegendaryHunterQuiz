@@ -1,4 +1,5 @@
 import Button from "./Button"
+import classes from "./GameMenu.module.css"
 
 /* eslint-disable react/prop-types */
 const GameMenu = (props) => {
@@ -14,11 +15,13 @@ const GameMenu = (props) => {
     }
 
     return (
-        <>
-            <div>GAME MENU</div>   
+        <div className={classes.container}>
+            <div className={classes.titlecontainer}>
+                <h1 className={classes.title}>HUNT SHOWDOWN</h1>
+                <h2 className={classes.subtitle}>Legendary Hunter Quiz</h2>
+            </div>
             <Button onClick={handleStart} name="Begin Game" />
-        </>
-        
+        </div>      
     )
 }
 

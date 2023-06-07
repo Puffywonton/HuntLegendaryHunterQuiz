@@ -2,7 +2,6 @@
 import classes from './QuizCard.module.css'
 
 const QuizCard = (props) => {
-  
     const answers = props.data.hunterChoicesArray.map((answer) => {
         return (
             <li onClick={props.onClick} className={classes.option} key={answer.id} id={answer.id}>{answer.name}</li>    
