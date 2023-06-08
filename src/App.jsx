@@ -1,52 +1,28 @@
 import { useState } from 'react'
 import './App.css'
 import QuizCard from './components/QuizCard'
-import shuffleArray from './components/shuffleArray'
-import hunters from './data/hunters'
 import ScoreBoard from './components/ScoreBoard'
 import GameOver from './components/GameOver'
 import RoundResult from './components/RoundResult'
 import GameMenu from './components/GameMenu'
+import quizQuestionsGenerator from './logic/quizQuestionsGenerator'
 
 function App() {
+  const [activeQuestion, setActiveQuestion] = useState(0)
   const [modalMessage, setModalMessage] = useState({})
-  const [numberOfQuestions, setNumberOfQuestions] = useState(6)
+  const [numberOfQuestions, setNumberOfQuestions] = useState(1)
   const [beginGame, setBeginGame] = useState(false)
   const [gameOver, setGameOver] = useState(false)
   const [score, setScore] = useState(0)
-  const [usedHunters, setUsedHunters] = useState([])
-  const [questionNumber, setQuestionNumber] = useState(1)
-
-
-  const selectionOfHunters = () => {
-    const shuffledArray = structuredClone(shuffleArray(hunters))
-    let selectedHunter
-    let found = ""
-    const otherChoicesArray = []
-    while (found != undefined) {
-        if (selectedHunter != undefined && otherChoicesArray.length < 3) { //I don't want to waste possible wrong answers
-            otherChoicesArray.push(selectedHunter)
-        }
-        selectedHunter = shuffledArray.shift()
-        found = usedHunters.find(element => element.name === selectedHunter.name)
-    }
-    while (otherChoicesArray.length < 3) {
-        let tempHunter = shuffledArray.shift()
-        otherChoicesArray.push(tempHunter)
-    }
-    setUsedHunters([...usedHunters, selectedHunter])
-    let hunterChoicesArray = shuffleArray([selectedHunter, ...otherChoicesArray])
-    return ({selectedHunter, hunterChoicesArray})
-  }
-  const [currentHunterList, setCurrentHunterList] = useState(selectionOfHunters)
-
+  const questions = quizQuestionsGenerator(numberOfQuestions)
+  const questionNumber = activeQuestion + 1
+  
   const loadNextQuestion = () => {
-    if (questionNumber > numberOfQuestions) {
+    if (questionNumber > numberOfQuestions - 1) {
       setGameOver(true)
     } else {
-      setQuestionNumber((prev) => prev + 1)
+      setActiveQuestion((prev) => prev + 1)
     }
-    setCurrentHunterList(selectionOfHunters)    
   }
 
   const handleModal = (message, color) => {
@@ -54,27 +30,33 @@ function App() {
     document.getElementById('toto').showModal()
     setTimeout(() => {
       document.getElementById('toto').close()
-      loadNextQuestion()
     }, "1250")
   }
 
   const handleAnswerClick = (e) => {
     e.preventDefault()
     const answerId = e.target.id
-    if (answerId === currentHunterList.selectedHunter.id) {
-      handleModal('You Are Correct', 'white')
+    console.log("you clicked", answerId)
+    let message
+    let color
+    if (answerId === questions[activeQuestion].selectedHunter.id) {
+      message = 'You Were Correct'
+      color = 'white'
       setScore((prev) => prev + 1)
     } else {
-      handleModal('You Are Wrong', 'red')
+      message = 'You Were Wrong'
+      color = 'red'
     }
+    handleModal(message, color)
+    loadNextQuestion()
   }
 
   return (
     <>
       <div className="mother">
-        {!beginGame && <GameMenu setQuestionNumber={setQuestionNumber} setBeginGame={setBeginGame} setNumberOfQuestions={setNumberOfQuestions} setGameOver={setGameOver} setScore={setScore} setUsedHunters={setUsedHunters} />}
+        {!beginGame && <GameMenu setActiveQuestion={setActiveQuestion} setBeginGame={setBeginGame} setNumberOfQuestions={setNumberOfQuestions} setGameOver={setGameOver} setScore={setScore}/>}
         {!gameOver && beginGame ? <ScoreBoard score={score} /> : ''}
-        {!gameOver && beginGame ? <QuizCard key={questionNumber} data={currentHunterList} onClick={handleAnswerClick} questionNumber={questionNumber} /> : ''}
+        {!gameOver && beginGame ? <QuizCard key={questionNumber} data={questions[activeQuestion]} numberOfQuestions={numberOfQuestions} questionNumber={questionNumber} onClick={handleAnswerClick} /> : ''}
         {gameOver && beginGame ? <GameOver score={score} setBeginGame={setBeginGame} /> : ''}
         <RoundResult data={modalMessage} />
       </div>

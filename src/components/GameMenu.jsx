@@ -8,10 +8,10 @@ const GameMenu = (props) => {
     const handleStart = (e) => {
         e.preventDefault()
         props.setScore(0)
-        props.setQuestionNumber(1)
-        props.setUsedHunters([])
+        props.setActiveQuestion(0)
         props.setGameOver(false)
         props.setBeginGame(true)
+        props.setNumberOfQuestions(8)
     }
 
     return (

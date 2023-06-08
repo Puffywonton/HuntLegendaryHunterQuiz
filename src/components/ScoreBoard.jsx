@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
-// import classes from './ScoreBoard.module.css'
+import classes from './ScoreBoard.module.css'
 
 const ScoreBoard = (props) => {
     return (
-        <div>
+        <span className={classes.score} >
             SCORE {props.score}
-        </div>    
+        </span>    
     )
 }
 

@@ -15,7 +15,7 @@ const QuizCard = (props) => {
             className={classes.image}
             alt="A Random Legendary Hunter"
           />
-          <div className={classes.question}>Question #{props.questionNumber} -- Who is this hunter?</div>
+          <div className={classes.question}>Question {props.questionNumber}/{props.numberOfQuestions} -- Who is this hunter?</div>
             <ul className={classes.optionContainer}>
                 {answers}
             </ul>          
